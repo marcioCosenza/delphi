@@ -10,7 +10,7 @@ Função para remover os caracteres especiais para o armazenamento em banco de d
 Funções para formatar corretamente os valores numéricos com a mascara correta.
 
 Usage:
-Basta  adicionar 'untMask.pas' (não é necessário add o untBuscaCep.pas) no form que será usado.
+Basta  adicionar 'untMask.pas' (não é necessário add o untBuscaCep.pas, mas deve ser adicionado ao projeto) no form que será usado.
 Defina quais Edits serão usados (o exemplo está no onCreate do Main.pas).
 As funções de validação, remoção dos caracteres especiais e a formatação para exibição estao no 'ConverterClick' do 'Main.pas'
 No evento 'FormPaint' do TForm que vc usará é necessário que adicione a função: validaAllEdtColor(Self), como no main.pas.
