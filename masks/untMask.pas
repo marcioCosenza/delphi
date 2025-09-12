@@ -3,15 +3,12 @@ unit untMask;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.UITypes,
+  System.SysUtils, System.Classes, System.UITypes, System.RegularExpressions,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Edit, FMX.Objects, FMX.SpinBox, FMX.ListBox,
-  untBuscaCEP
-  ;
-
+  untBuscaCEP;
 
 Type TMask = Class
   public
-
     type charList = record
       id: integer;
       ch: Char;
@@ -22,7 +19,6 @@ Type TMask = Class
 
     procedure start(frm: TForm);
     procedure validaAllEdtColor(frm: TForm);
-
     function limparTxt    (param: string):string;//remove os caracteres especiais, retornando apenas os numeros
 
     //configura os edts
@@ -31,6 +27,9 @@ Type TMask = Class
     procedure defFoneCel  (quem: TEdit);
     procedure defCPF      (quem: TEdit);
     procedure defCNPJ     (quem: TEdit);
+    procedure defPlacaOld (quem: TEdit);
+    procedure defPlacaMS  (quem: TEdit);
+    procedure defEmail    (quem: TEdit);
 
     //formatar
     function formatarCEP  (param: Double): string;
@@ -38,6 +37,9 @@ Type TMask = Class
     function formatarCel  (param: Double):  string;
     function formatarCPF  (param: Double):  string;
     function formatarCNPJ (param: Double):  string;
+    function formatarPlacaOld (param: string):  string;
+    function formatarPlacaMS (param: string):  string;
+    function formatarEmail (param: Double):  string;
 
     //validacao
     function isCNPJ  (param: string): boolean;
@@ -45,6 +47,9 @@ Type TMask = Class
     function isCEP   (param: string): boolean;
     function isFone  (param: string): boolean;
     function isCel   (param: string): boolean;
+    function isPlacaOld (param: string): boolean;
+    function isPlacaMS (param: string): boolean;
+    function isEmail (param: string): boolean;
 
   private
     procedure setEditColor   (cmp: TComponent);
@@ -57,12 +62,16 @@ Type TMask = Class
     procedure validarCel   (Sender: TObject);
     procedure validarCPF   (Sender: TObject);
     procedure validarCNPJ  (Sender: TObject);
+    procedure validarPlacaOld (Sender: TObject);
+    procedure validarPlacaMS (Sender: TObject);
+    procedure validarEmail (Sender: TObject);
 
     //Auxilio
     procedure fechaRct(Sender: TObject);
     procedure soNum   (Sender: TObject; var Key: Word;  var KeyChar: Char; Shift: TShiftState);
     procedure addExecao(quem: TEdit; funcao: integer);
     function  procuraPorExcecao(cmp: TComponent): integer;
+    procedure maisculas(Sender: TObject; var Key: Word;  var KeyChar: Char; Shift: TShiftState);
 
     //OnKeyUp
     procedure keyYUpGeral   (Sender: TObject; var KeyChar: Char; var tamConst: integer; var lista: array of charList);
@@ -71,31 +80,44 @@ Type TMask = Class
     procedure foneCelKeyUp  (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure CPFKeyUp      (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure CNPJKeyUp     (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure placaOldKeyUp (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure placaMSKeyUp (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure emailKeyUp    (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 
     procedure showMSG(param: string);
     procedure buscaCep(Sender: TObject);
 
-    const tamCNPJ = 14;
-    const tamCPF  = 11;
-    const tamCEP  =  8;
-    const tamCel  = 11;
-    const tamFone = 10;
-
     const corEdtOk  = $2E09F611;
     const corEdtNOk = $64C85D5D;
 
+    const tamCNPJ  = 14;
+    const tamCPF   = 11;
+    const tamCEP   =  8;
+    const tamCel   = 11;
+    const tamFone  = 10;
+    const tamPlaca = 7;
+
+    const vcCEP      = 0;
+    const vcCPF      = 1;
+    const vcCNPJ     = 2;
+    const vcTelCel   = 3;
+    const vcTelFix   = 4;
+    const vcPlacaOld = 5;
+    const vcPlacaMS  = 6;
+    const vcEmail    = 7;
+
     type excecoes = record
-      name: string;
-      funcao: integer; //0: CEP;  1: CPF;  2: CNPJ;  3: fone cel;  4: fone fixo
+      name  : string;
+      funcao: integer; //identificado pelas constantes 'vcNOME'
     end;
 
     type dadosCEP = record
-      cep: TEdit;
-      endereco: TEdit;
-      complemento: TEdit;
-      bairro: TEdit;
-      cidade: TEdit;
-      UF: TComboBox;
+      cep         : TEdit;
+      endereco    : TEdit;
+      complemento : TEdit;
+      bairro      : TEdit;
+      cidade      : TEdit;
+      UF          : TComboBox;
     end;
 
     var
@@ -104,7 +126,6 @@ Type TMask = Class
       posLista     : integer;
       exibirMsg    : boolean;
       form         : TForm;
-
 End;
 
 implementation
@@ -140,6 +161,7 @@ begin
   if (param.Length = tamFone) then Result := True
   else showMsg('Telefone fixo inválido');
 end;
+
 
 // =========================================
 function TMask.isCNPJ(param: string): boolean;
@@ -204,10 +226,7 @@ begin
     Result := false
   end;
 
-
   if not(Result) then showMsg('CNPJ inválido');
-
-
 end;
 
 // =======================
@@ -271,6 +290,35 @@ begin
   if not(Result) then showMsg('CPF inválido');
 end;
 
+// =========================================
+function TMask.isPlacaMS(param: string): boolean;
+var
+   Regex: TRegEx;
+begin
+  Result := false;
+  if (TRegEx.IsMatch(param, '^[A-Z]{3}\d{1}[A-Z]{1}\d{2}$')) then Result := True
+  else showMsg('Placa inválida');
+end;
+
+// =========================================
+function TMask.isPlacaOld(param: string): boolean;
+var
+   Regex: TRegEx;
+begin
+  Result := false;
+  if (TRegEx.IsMatch(param, '^[A-Z]{3}-\d{4}$')) then Result := True
+  else showMsg('Placa inválida');
+end;
+
+// =======================
+function TMask.isEmail(param: string): boolean;
+var
+   Regex: TRegEx;
+begin
+  Result := false;
+  if (TRegEx.IsMatch(param, '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')) then Result := True
+  else showMsg('Email inválido');
+end;
 
 
 
@@ -404,7 +452,7 @@ var
 begin
 
   tam := tamCPF;
-  SetLength(lista, 3);
+  SetLength(lista, tam);
 
   lista[0].id :=  4; lista[0].ch := '.';
   lista[1].id :=  7; lista[1].ch := '.';
@@ -413,6 +461,47 @@ begin
   keyYUpGeral(Sender, KeyChar, tam, lista);
   validarCPF(Sender);
 end;
+
+
+procedure TMask.placaMSKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+  Shift: TShiftState);
+var
+  lista: array of charList;
+  tam: Integer;
+  carac: char;
+begin
+  tam := tamPlaca;
+  SetLength(lista, tam);
+
+  lista[0].id :=  4; lista[0].ch := ' ';
+  keyYUpGeral(Sender,  KeyChar, tam, lista);
+  validarPlacaMS(Sender);
+end;
+
+// =========================================
+procedure TMask.placaOldKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+  Shift: TShiftState);
+var
+  lista: array of charList;
+  tam: Integer;
+  carac: char;
+begin
+  tam := tamPlaca;
+  SetLength(lista, tam);
+
+  lista[0].id :=  4; lista[0].ch := '-';
+
+  keyYUpGeral(Sender,  KeyChar, tam, lista);
+  validarPlacaOld(Sender);
+end;
+
+// =========================================
+procedure TMask.emailKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+  Shift: TShiftState);
+begin
+  validarEmail(Sender);
+end;
+
 
 constructor TMask.create(frm: TForm);
 begin
@@ -609,6 +698,40 @@ begin
   TRectangle (rct).Visible    := true;
 end;
 
+//========================
+procedure TMask.validarPlacaMS(Sender: TObject);
+var
+  rct: TComponent;
+  cor: TAlphaColor;
+  placa: string;
+begin
+
+  placa := TEdit (TComponent(Sender)).Text;
+  placa := limparTxt(placa);
+
+  cor := corEdtNOk;
+
+  if (isPlacaMS(placa)) then cor := corEdtOk;
+
+  rct := TEdit (TComponent(Sender)).Children[2];
+  TRectangle (rct).Fill.Color := cor;
+  TRectangle (rct).Visible    := true;
+end;
+
+//========================
+procedure TMask.validarPlacaOld(Sender: TObject);
+var
+  rct: TComponent;
+  cor: TAlphaColor;
+begin
+  cor := corEdtNOk;
+
+  if (isPlacaOld(TEdit (TComponent(Sender)).Text)) then cor := corEdtOk;
+
+  rct := TEdit (TComponent(Sender)).Children[2];
+  TRectangle (rct).Fill.Color := cor;
+  TRectangle (rct).Visible    := true;
+end;
 
 //========================
 procedure TMask.validarCPF(Sender: TObject);
@@ -623,6 +746,22 @@ begin
   rct := TEdit (TComponent(Sender)).Children[2];
   TRectangle (rct).Fill.Color := cor;
   TRectangle (rct).Visible    := true;
+end;
+
+//========================
+procedure TMask.validarEmail(Sender: TObject);
+var
+  rct: TComponent;
+  cor: TAlphaColor;
+begin
+  cor := corEdtNOk;
+
+  if (isEmail(TEdit (TComponent(Sender)).Text)) then cor := corEdtOk;
+
+  rct := TEdit (TComponent(Sender)).Children[2];
+  TRectangle (rct).Fill.Color := cor;
+  TRectangle (rct).Visible    := true;
+
 end;
 
 //========================
@@ -670,11 +809,12 @@ begin
 end;
 
 
+
 procedure TMask.defCEP(cep, endereco, complemento, bairro, cidade: TEdit; UF: TComboBox);
 var
   qtd: integer;
 begin
-  addExecao(cep, 0);
+  addExecao(cep, vcCEP);
 
   qtd := Length(listaCEP);
   SetLength(listaCEP, qtd + 1);
@@ -723,7 +863,7 @@ end;
 // =========================================
 procedure TMask.defCNPJ(quem: TEdit);
 begin
-  addExecao(quem, 2);
+  addExecao(quem, vcCNPJ);
 
   quem.OnKeyUp := CNPJKeyUp;
   quem.OnExit  := validarCNPJ;
@@ -733,7 +873,7 @@ end;
 // =========================================
 procedure TMask.defCPF(quem: TEdit);
 begin
-  addExecao(quem, 1);
+  addExecao(quem, vcCPF);
 
   quem.OnKeyUp := CPFKeyUp;
   quem.OnExit  := validarCPF;
@@ -743,7 +883,7 @@ end;
 // =========================================
 procedure TMask.defFoneCel(quem: TEdit);
 begin
-  addExecao(quem, 3);
+  addExecao(quem, vcTelCel);
 
   quem.OnKeyUp := foneCelKeyUp;
   quem.OnExit  := validarCel;
@@ -753,15 +893,41 @@ end;
 // =========================================
 procedure TMask.defFoneFixo(quem: TEdit);
 begin
-  addExecao(quem, 4);
+  addExecao(quem, vcTelFix);
 
   quem.OnKeyUp := foneFixoKeyUp;
   quem.OnExit  := validarFone;
   quem.OnKeyDown := soNum;
 end;
 
-//=================== FOMATAR ===================
+procedure TMask.defPlacaMS(quem: TEdit);
+begin
+  addExecao(quem, vcPlacaMS);
 
+  quem.OnKeyUp := placaMSKeyUp;
+  quem.OnExit  := validarPlacaMS;
+  quem.OnKeyDown := maisculas;
+end;
+
+procedure TMask.defPlacaOld(quem: TEdit);
+begin
+  addExecao(quem, vcPlacaOld);
+
+  quem.OnKeyUp := placaOldKeyUp;
+  quem.OnExit  := validarPlacaOld;
+  quem.OnKeyDown := maisculas;
+end;
+
+// =========================================
+procedure TMask.defEmail(quem: TEdit);
+begin
+  addExecao(quem, vcEmail);
+  quem.OnKeyUp := emailKeyUp;
+  quem.OnExit  := validarEmail;
+end;
+
+
+//=================== FOMATAR ===================
 function TMask.formatarCEP(param: Double): string;
 begin
   if (param = 0) then Result := ''
@@ -800,6 +966,12 @@ begin
 end;
 
 // =========================================
+function TMask.formatarEmail(param: Double): string;
+begin
+//
+end;
+
+// =========================================
 function TMask.formatarCel(param: Double): string;
 begin
   if (param = 0) then Result := ''
@@ -813,9 +985,20 @@ begin
   else result := '(' + copy(param.ToString, 1, 2) + ')' + copy(Param.ToString, 3, 4) + '-' + copy(Param.ToString, 7, 4) ;
 end;
 
+function TMask.formatarPlacaMS(param: string): string;
+begin
+  if (param = '0') then Result := ''
+  else result := copy(param, 1, 3) + ' ' + copy(Param, 4, 5);
+end;
+
+// =========================================
+function TMask.formatarPlacaOld(param: string): string;
+begin
+  if (param = '0') then Result := ''
+  else result := copy(param, 1, 3) + '-' + copy(Param, 4, 5);
+end;
 
 //=================== AUX ===================
-
 function TMask.limparTxt(param: string): string;
 begin
 if param = '' then Result := '0'
@@ -827,11 +1010,18 @@ else
   param := StringReplace(param, '/', '', [rfReplaceAll]);
   param := StringReplace(param, '(', '', [rfReplaceAll]);
   param := StringReplace(param, ')', '', [rfReplaceAll]);
+  param := StringReplace(param, ' ', '', [rfReplaceAll]);
 
   Result := param;
   end;
 end;
 
+
+procedure TMask.maisculas(Sender: TObject; var Key: Word; var KeyChar: Char;
+  Shift: TShiftState);
+begin
+  KeyChar := UpCase(KeyChar);
+end;
 
 // =========================================
 procedure TMask.soNum(Sender: TObject; var Key: Word; var KeyChar: Char;
@@ -872,7 +1062,6 @@ begin
     if listaExcecoes[I].name = nome then
       Result := I;
 end;
-
 
 end.
 
