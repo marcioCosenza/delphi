@@ -65,6 +65,33 @@ implementation
 
 {$R *.fmx}
 
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  mask := TMask.Create  (self);
+
+  mask.defCEP(edtCEP, edtEnde, edtComple, edtBairro, edtCidade, CmbBxUF);
+  mask.defCPF(edtCPF);
+  mask.defCNPJ(edtCNPJ);
+  mask.defFoneFixo(edtFoneFixo);
+  mask.defFoneCel(edtFoneCel);
+  mask.defPlacaOld(edtPlacaOld);
+  mask.defPlacaMS(edtPlacaMS);
+  mask.defEmail(edtEmail);
+
+  mask.start(Self);
+end;
+
+procedure TForm1.FormPaint(Sender: TObject; Canvas: TCanvas;
+  const ARect: TRectF);
+begin
+  mask.validaAllEdtColor(Self);
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  mask.Destroy;
+end;
+
 
 procedure TForm1.ConverterClick(Sender: TObject);
 var
@@ -162,32 +189,5 @@ begin
   else StringGrid1.Cells[3,7] := 'NOK';
 end;
 
-
-procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  mask.Destroy;
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-  mask := TMask.Create  (self);
-
-  mask.defCEP(edtCEP, edtEnde, edtComple, edtBairro, edtCidade, CmbBxUF);
-  mask.defCPF(edtCPF);
-  mask.defCNPJ(edtCNPJ);
-  mask.defFoneFixo(edtFoneFixo);
-  mask.defFoneCel(edtFoneCel);
-  mask.defPlacaOld(edtPlacaOld);
-  mask.defPlacaMS(edtPlacaMS);
-  mask.defEmail(edtEmail);
-
-  mask.start(Self);
-end;
-
-procedure TForm1.FormPaint(Sender: TObject; Canvas: TCanvas;
-  const ARect: TRectF);
-begin
-  mask.validaAllEdtColor(Self);
-end;
 
 end.
