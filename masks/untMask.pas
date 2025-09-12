@@ -141,7 +141,7 @@ begin
   Result := false;
   param :=   limparTxt(param);
   if (param.Length = tamCEP) then Result := True
-  else showMsg('CEP inv√°lido');
+  else showMsg('CEP inv·lido');
 end;
 
 // =========================================
@@ -150,7 +150,7 @@ begin
   Result := false;
   param := limparTxt(param);
   if (param.Length = tamCel) then Result := True
-  else showMsg('Telefone celular inv√°lido');
+  else showMsg('Telefone celular inv·lido');
 end;
 
 // =========================================
@@ -159,7 +159,7 @@ begin
   Result := false;
   param := limparTxt(param);
   if (param.Length = tamFone) then Result := True
-  else showMsg('Telefone fixo inv√°lido');
+  else showMsg('Telefone fixo inv·lido');
 end;
 
 
@@ -172,7 +172,7 @@ var
 begin
   CNPJ :=limparTxt(param);
 
-  // length - retorna o tamanho da string do CNPJ (CNPJ √© um n√∫mero formado por 14 d√≠gitos)
+  // length - retorna o tamanho da string do CNPJ (CNPJ È um n˙mero formado por 14 dÌgitos)
   if ((CNPJ = '00000000000000') or (CNPJ = '11111111111111') or
       (CNPJ = '22222222222222') or (CNPJ = '33333333333333') or
       (CNPJ = '44444444444444') or (CNPJ = '55555555555555') or
@@ -185,14 +185,14 @@ begin
         exit;
       end;
 
-// "try" - protege o c√≥digo para eventuais erros de convers√£o de tipo atrav√©s da fun√ß√£o "StrToInt"
+// "try" - protege o cÛdigo para eventuais erros de convers„o de tipo atravÈs da funÁ„o "StrToInt"
   try
-{ *-- C√°lculo do 1o. Digito Verificador --* }
+{ *-- C·lculo do 1o. Digito Verificador --* }
     sm := 0;
     peso := 2;
     for i := 12 downto 1 do
     begin
-// StrToInt converte o i-√©simo caractere do CNPJ em um n√∫mero
+// StrToInt converte o i-Èsimo caractere do CNPJ em um n˙mero
       sm := sm + (StrToInt(CNPJ[i]) * peso);
       peso := peso + 1;
       if (peso = 10)
@@ -201,9 +201,9 @@ begin
     r := sm mod 11;
     if ((r = 0) or (r = 1))
        then dig13 := '0'
-    else str((11-r):1, dig13); // converte um n√∫mero no respectivo caractere num√©rico
+    else str((11-r):1, dig13); // converte um n˙mero no respectivo caractere numÈrico
 
-{ *-- C√°lculo do 2o. Digito Verificador --* }
+{ *-- C·lculo do 2o. Digito Verificador --* }
     sm := 0;
     peso := 2;
     for i := 13 downto 1 do
@@ -226,7 +226,7 @@ begin
     Result := false
   end;
 
-  if not(Result) then showMsg('CNPJ inv√°lido');
+  if not(Result) then showMsg('CNPJ inv·lido');
 end;
 
 // =======================
@@ -238,7 +238,7 @@ var
 begin
   CPF := limparTxt(param);
 
-  // length - retorna o tamanho da string (CPF √© um n√∫mero formado por 11 d√≠gitos)
+  // length - retorna o tamanho da string (CPF È um n˙mero formado por 11 dÌgitos)
   if ((CPF = '00000000000') or (CPF = '11111111111') or
       (CPF = '22222222222') or (CPF = '33333333333') or
       (CPF = '44444444444') or (CPF = '55555555555') or
@@ -250,23 +250,23 @@ begin
               exit;
             end;
 
-  // try - protege o c√≥digo para eventuais erros de convers√£o de tipo na fun√ß√£o StrToInt
+  // try - protege o cÛdigo para eventuais erros de convers„o de tipo na funÁ„o StrToInt
   try
-  { *-- C√°lculo do 1o. Digito Verificador --* }
+  { *-- C·lculo do 1o. Digito Verificador --* }
     s := 0;
     peso := 10;
     for i := 1 to 9 do
       begin
-        // StrToInt converte o i-√©simo caractere do CPF em um n√∫mero
+        // StrToInt converte o i-Èsimo caractere do CPF em um n˙mero
         s := s + (StrToInt(CPF[i]) * peso);
         peso := peso - 1;
       end;
 
     r := 11 - (s mod 11);
     if ((r = 10) or (r = 11))  then dig10 := '0'
-    else str(r:1, dig10); // converte um n√∫mero no respectivo caractere num√©rico
+    else str(r:1, dig10); // converte um n˙mero no respectivo caractere numÈrico
 
-{ *-- C√°lculo do 2o. Digito Verificador --* }
+{ *-- C·lculo do 2o. Digito Verificador --* }
     s := 0;
     peso := 11;
     for i := 1 to 10 do
@@ -287,37 +287,34 @@ begin
     Result := false
   end;
 
-  if not(Result) then showMsg('CPF inv√°lido');
+  if not(Result) then showMsg('CPF inv·lido');
 end;
 
 // =========================================
 function TMask.isPlacaMS(param: string): boolean;
-var
-   Regex: TRegEx;
+
 begin
   Result := false;
   if (TRegEx.IsMatch(param, '^[A-Z]{3}\d{1}[A-Z]{1}\d{2}$')) then Result := True
-  else showMsg('Placa inv√°lida');
+  else showMsg('Placa inv·lida');
 end;
 
 // =========================================
 function TMask.isPlacaOld(param: string): boolean;
-var
-   Regex: TRegEx;
+
 begin
   Result := false;
   if (TRegEx.IsMatch(param, '^[A-Z]{3}-\d{4}$')) then Result := True
-  else showMsg('Placa inv√°lida');
+  else showMsg('Placa inv·lida');
 end;
 
 // =======================
 function TMask.isEmail(param: string): boolean;
-var
-   Regex: TRegEx;
+
 begin
   Result := false;
   if (TRegEx.IsMatch(param, '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')) then Result := True
-  else showMsg('Email inv√°lido');
+  else showMsg('Email inv·lido');
 end;
 
 
@@ -333,7 +330,6 @@ var
   I, I2    : Integer;
   tam      : integer;
   tamLista : integer;
-  txt      :string;
   edt      : TEdit;
   rct      : TRectangle;
 begin
@@ -468,7 +464,6 @@ procedure TMask.placaMSKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
 var
   lista: array of charList;
   tam: Integer;
-  carac: char;
 begin
   tam := tamPlaca;
   SetLength(lista, tam);
@@ -484,7 +479,6 @@ procedure TMask.placaOldKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
 var
   lista: array of charList;
   tam: Integer;
-  carac: char;
 begin
   tam := tamPlaca;
   SetLength(lista, tam);
@@ -1064,4 +1058,5 @@ begin
 end;
 
 end.
+
 

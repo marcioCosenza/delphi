@@ -67,7 +67,7 @@ Type TBuscaCEP = Class
       complemento :string;
 
       status      : Integer;    // 0: OK; 1: desconectado; 2: falha ao localizar registro; 3: digitado incorretamente
-      rctFundo    : TRectangle; //usado para exibir msg de aguarde enquant√≥ procura o CEP
+      rctFundo    : TRectangle; //usado para exibir msg de aguarde enquantÛ procura o CEP
 
 
 End;
@@ -99,7 +99,7 @@ begin
   complemento := '';
 
 
-  status := 2; // seta como nao encontrado, caso encontre ou 'sem conexao' o valor ser√° alterado
+  status := 2; // seta como nao encontrado, caso encontre ou 'sem conexao' o valor ser· alterado
 
   // valida se o CEP foi digitado corretamente
   mask := TMask.create(nil);
@@ -146,10 +146,10 @@ begin
           finally
 
             case  (getStatus()) of
-              1: ShowMessage('N√£o foi poss√≠vel resgatar as informa√ß√µes');
+              1: ShowMessage('N„o foi possÌvel resgatar as informaÁıes');
               2: ShowMessage('Verifique se foi digitado corretamente');
-              3: ShowMessage('O CEP digitado √© inv√°lido');
-              4: ShowMessage('A conex√£o atingiu o tempo limite');
+              3: ShowMessage('O CEP digitado È inv·lido');
+              4: ShowMessage('A conex„o atingiu o tempo limite');
             end;
 
 
