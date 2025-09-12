@@ -3,28 +3,9 @@ unit untMask;
 interface
 
 uses
-
-  System.SysUtils,
-  System.Classes,
-  System.UITypes,
-
-  FMX.Types,
-  FMX.Controls,
-  FMX.Forms,
-  FMX.Graphics,
-  FMX.Dialogs,
-  FMX.Edit,
-  FMX.Objects,
-  FMX.SpinBox,
-  FMX.ListBox,
-
-  untBuscaCEP,
-
-
-    System.Types, System.Variants
-
-
-
+  System.SysUtils, System.Classes, System.UITypes,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Edit, FMX.Objects, FMX.SpinBox, FMX.ListBox,
+  untBuscaCEP
   ;
 
 
@@ -35,7 +16,6 @@ Type TMask = Class
       id: integer;
       ch: Char;
     end;
-
 
     constructor create(frm: TForm);
     procedure setExibirMsg(param: Boolean);
@@ -66,9 +46,7 @@ Type TMask = Class
     function isFone  (param: string): boolean;
     function isCel   (param: string): boolean;
 
-
   private
-
     procedure setEditColor   (cmp: TComponent);
     procedure validaEdtColor (Sender: TObject);
 
@@ -106,43 +84,36 @@ Type TMask = Class
     const corEdtOk  = $2E09F611;
     const corEdtNOk = $64C85D5D;
 
-
     type excecoes = record
       name: string;
       funcao: integer; //0: CEP;  1: CPF;  2: CNPJ;  3: fone cel;  4: fone fixo
     end;
 
-  type dadosCEP = record
-    cep: TEdit;
-    endereco: TEdit;
-    complemento: TEdit;
-    bairro: TEdit;
-    cidade: TEdit;
-    UF: TComboBox;
-  end;
-
+    type dadosCEP = record
+      cep: TEdit;
+      endereco: TEdit;
+      complemento: TEdit;
+      bairro: TEdit;
+      cidade: TEdit;
+      UF: TComboBox;
+    end;
 
     var
       listaExcecoes: Array of excecoes;
       listaCEP     : Array of dadosCEP;
       posLista     : integer;
       exibirMsg    : boolean;
-
-      form: TForm;
+      form         : TForm;
 
 End;
 
 implementation
-
 
 { TMask }
 
 // =====================================================
 // ====================+ VERIFICACAO ===================
 // =====================================================
-
-
-
 
 function TMask.isCEP(param: string): boolean;
 begin
@@ -152,6 +123,7 @@ begin
   else showMsg('CEP inválido');
 end;
 
+// =========================================
 function TMask.isCel(param: string): boolean;
 begin
   Result := false;
@@ -160,6 +132,7 @@ begin
   else showMsg('Telefone celular inválido');
 end;
 
+// =========================================
 function TMask.isFone(param: string): boolean;
 begin
   Result := false;
@@ -168,15 +141,13 @@ begin
   else showMsg('Telefone fixo inválido');
 end;
 
-
+// =========================================
 function TMask.isCNPJ(param: string): boolean;
 var
   dig13, dig14: string;
   sm, i, r, peso: integer;
-
   CNPJ: string;
 begin
-
   CNPJ :=limparTxt(param);
 
   // length - retorna o tamanho da string do CNPJ (CNPJ é um número formado por 14 dígitos)
@@ -186,10 +157,11 @@ begin
       (CNPJ = '66666666666666') or (CNPJ = '77777777777777') or
       (CNPJ = '88888888888888') or (CNPJ = '99999999999999') or
       (length(CNPJ) <> 14))
-     then begin
-            Result := false;
-            exit;
-          end;
+     then
+      begin
+        Result := false;
+        exit;
+      end;
 
 // "try" - protege o código para eventuais erros de conversão de tipo através da função "StrToInt"
   try
@@ -239,13 +211,12 @@ begin
 end;
 
 // =======================
-
 function TMask.isCPF(param: string): boolean;
-var  dig10, dig11: string;
-    s, i, r, peso: integer;
-    CPF: string;
+var
+  dig10, dig11: string;
+  s, i, r, peso: integer;
+  CPF: string;
 begin
-
   CPF := limparTxt(param);
 
   // length - retorna o tamanho da string (CPF é um número formado por 11 dígitos)
@@ -303,32 +274,26 @@ end;
 
 
 
-
-
 // =====================================================
 // ======================  KEY UP ======================
 // =====================================================
 
 procedure TMask.keyYUpGeral(Sender: TObject; var KeyChar: Char; var tamConst: integer; var lista: array of charList);
 var
-
-  value: string;
-  aux: string;
-  I, I2: Integer;
-
-  tam: integer;
+  value    : string;
+  aux      : string;
+  I, I2    : Integer;
+  tam      : integer;
   tamLista : integer;
-  txt:string;
-  edt :TEdit;
-  rct :TRectangle;
+  txt      :string;
+  edt      : TEdit;
+  rct      : TRectangle;
 begin
-
-  edt := TEdit ( Tcontrol(Sender));
+  edt := TEdit (Tcontrol(Sender));
   rct := TRectangle (Tcontrol(Sender).Children[2]);
 
   if ((KeyChar <> #0)  and (edt.Text <> '')) then
     begin
-
       value := edt.Text;
       value :=limparTxt( value);
       tam   := Length(value);
@@ -341,16 +306,14 @@ begin
         end
       else rct.Visible := False;
 
-      aux := '';
-
-
-      I2:= 0;
+      aux      := '';
+      I2       := 0;
       tamLista := Length(lista);
+
       for I := 1 to tamConst  do
         begin
           if I <= tam then
             begin
-
 
             if (I2 <= tamLista) then
               begin
@@ -361,8 +324,6 @@ begin
                   end;
                 aux := aux + value[I];
               end;
-
-
             end;
         end;
       edt.Text := aux;
@@ -374,7 +335,6 @@ end;
 
 //============== FONE CEL ==============
 //======================================
-
 procedure TMask.foneCelKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
   Shift: TShiftState);
 var
@@ -394,7 +354,6 @@ end;
 
 //============== FONE FIXO =============
 //======================================
-
 procedure TMask.foneFixoKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 var
   lista: array of charList;
@@ -411,10 +370,9 @@ begin
   validarGeral(TEdit ( Tcontrol(Sender)), tamFone);
 end;
 
+
 //================ CNPJ ================
 //======================================
-
-
 procedure TMask.CNPJKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
   Shift: TShiftState);
 
@@ -433,13 +391,11 @@ begin
 
   keyYUpGeral(Sender, KeyChar, tam, lista);
   validarCNPJ(Sender);
-
 end;
 
 
 //================= CPF ================
 //======================================
-
 procedure TMask.CPFKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
   Shift: TShiftState);
 var
@@ -474,18 +430,14 @@ end;
 procedure TMask.buscaCep(Sender: TObject);
 var
   buscaCEP: TBuscaCEP;
-
 begin
-
   validarGeral(TEdit (TComponent(Sender)), tamCEP);
 
   TThread.CreateAnonymousThread(procedure
-
     begin
       TThread.CurrentThread.FreeOnTerminate := true;
       buscaCEP:= TBuscaCEP.Create(Form);
       buscaCEP.resgatar(TEdit (TComponent(Sender)).Text);
-
       TThread.Synchronize(TThread.CurrentThread, procedure
         var
           I: Integer;
@@ -504,25 +456,17 @@ begin
                 ufIndex :=  listaCEP[I].UF.Items.IndexOf(uf);
                 listaCEP[I].UF.ItemIndex      := ufIndex;
               end;
-
-   //       rctMask.Visible := true;
-
-
           buscaCEP.Destroy;
         end);
     end).Start;
-
-
 end;
 
 procedure TMask.CEPKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
   Shift: TShiftState);
-
 var
   lista: array of charList;
   tam: Integer;
 begin
-
   tam := tamCEP;
   SetLength(lista, 2);
 
@@ -538,21 +482,16 @@ end;
 //=============== CRIAR ================
 //======================================
 
-
-
 procedure TMask.setEditColor(cmp: TComponent);
 var
   rct: TRectangle;
-
   pode: Boolean;
 begin
-
   pode := False;
   if ((cmp is TEdit) or (cmp is TComboBox) or (cmp is TSpinBox)) then pode := True;
 
   if pode then
     begin
-
       rct := TRectangle.Create(cmp);
       rct.Align   := TAlignLayout.Client;
       rct.Visible := True;
@@ -583,14 +522,13 @@ begin
 end;
 
 
-
+// =========================================
 procedure TMask.setExibirMsg(param: Boolean);
 begin
   exibirMsg := param;
 end;
 
-
-
+// =========================================
 procedure TMask.showMSG(param: string);
 begin
 if exibirMsg then ShowMessage(param);
@@ -605,18 +543,13 @@ end;
 procedure TMask.validaAllEdtColor(frm: TForm);
 var
   I, aux: Integer;
-
 begin
-
-
-
   for I := 1  to frm.ComponentCount  - 1 do
     begin
       aux := procuraPorExcecao(frm.Components[I]);
       if (aux = -1 ) then validaEdtColor(frm.Components[I])
       else
         begin
-
           case listaExcecoes[aux].funcao of
             0:validarCEP(frm.Components[I]);
             1:validarCPF(frm.Components[I]);
@@ -626,39 +559,31 @@ begin
           end;
         end;
     end;
-
-
-
 end;
 
 procedure TMask.validaEdtColor(Sender: TObject);
 var
-  I: Integer;
-  ok: Boolean;
-  cor: TAlphaColor;
-
+  I   : Integer;
+  ok  : Boolean;
+  cor : TAlphaColor;
   permitido: Boolean;
 begin
-
-permitido := false;
-
-  ok := true;
-  I:= 2;
+  permitido := false;
+  ok        := true;
+  I         := 2;
 
   if (TControl(Sender) is TEdit)      then begin if TEdit      (Tcontrol(Sender)).Text      = '' then ok := false; permitido:= true; end;
   if (TControl(Sender) is TSpinbox)   then begin if TSpinbox   (Tcontrol(Sender)).Value     =  0 then ok := false; permitido:= true; end;
   if (TControl(Sender) is TComboBox)  then begin if TComboBox  (Tcontrol(Sender)).ItemIndex = -1 then ok := false; permitido:= true; end;
 
   if permitido then
-
-  if (Tcontrol(Sender).ChildrenCount > I) then
-    begin
-      if ok then cor := corEdtOk
-      else cor := corEdtNOk;
-      TRectangle (Tcontrol(Sender).Children[I]).Fill.Color := cor;
-      TRectangle (Tcontrol(Sender).Children[I]).Visible := true;
-    end;
-
+    if (Tcontrol(Sender).ChildrenCount > I) then
+      begin
+        if ok then cor := corEdtOk
+        else cor := corEdtNOk;
+        TRectangle (Tcontrol(Sender).Children[I]).Fill.Color := cor;
+        TRectangle (Tcontrol(Sender).Children[I]).Visible := true;
+      end;
 end;
 
 //========================
@@ -670,19 +595,15 @@ var
   cor: TAlphaColor;
   txt: string;
   tamAferido: Integer;
-
 begin
   cor := corEdtNOk;
   rct := TEdit (edt).Children[2];
-
   txt := TEdit (edt).Text;
   txt := limparTxt(txt);
+
   tamAferido:=   Length(txt);
 
-  if ( tamAferido = tam) then cor := corEdtOk;
-
-
-//  listaCEP[qtd].complemento   edt
+  if (tamAferido = tam) then cor := corEdtOk;
 
   TRectangle (rct).Fill.Color := cor;
   TRectangle (rct).Visible    := true;
@@ -690,12 +611,10 @@ end;
 
 
 //========================
-
 procedure TMask.validarCPF(Sender: TObject);
 var
   rct: TComponent;
   cor: TAlphaColor;
-
 begin
   cor := corEdtNOk;
 
@@ -707,12 +626,10 @@ begin
 end;
 
 //========================
-
 procedure TMask.validarCNPJ(Sender: TObject);
 var
   rct: TComponent;
   cor: TAlphaColor;
-
 begin
   cor := corEdtNOk;
 
@@ -725,30 +642,22 @@ end;
 
 
 //========================
-
 procedure TMask.validarCel(Sender: TObject);
 begin
   validarGeral(TEdit (TComponent(Sender)), tamCel);
 end;
 
 //========================
-
 procedure TMask.validarFone(Sender: TObject);
 begin
   validarGeral(TEdit (TComponent(Sender)), tamFone);
 end;
 
 //========================
-
 procedure TMask.validarCEP(Sender: TObject);
-
 begin
-
   validarGeral(TEdit (TComponent(Sender)), tamCEP);
-
-
 end;
-
 
 
 //=========== DEFINICAO ===========
@@ -758,7 +667,6 @@ var
   I: Integer;
 begin
   for I := 0  to frm.ComponentCount  - 1 do setEditColor(frm.Components[I]);
-
 end;
 
 
@@ -807,14 +715,12 @@ begin
   listaCEP[qtd].UF.Items.Add('SE');
   listaCEP[qtd].UF.Items.Add('TO');
 
-
-  cep.OnKeyUp := CEPKeyUp;
-  cep.OnExit := buscaCEP;
+  cep.OnKeyUp   := CEPKeyUp;
+  cep.OnExit    := buscaCEP;
   cep.OnKeyDown := soNum;
-
 end;
 
-
+// =========================================
 procedure TMask.defCNPJ(quem: TEdit);
 begin
   addExecao(quem, 2);
@@ -824,6 +730,7 @@ begin
   quem.OnKeyDown := soNum;
 end;
 
+// =========================================
 procedure TMask.defCPF(quem: TEdit);
 begin
   addExecao(quem, 1);
@@ -833,8 +740,7 @@ begin
   quem.OnKeyDown := soNum;
 end;
 
-
-
+// =========================================
 procedure TMask.defFoneCel(quem: TEdit);
 begin
   addExecao(quem, 3);
@@ -844,6 +750,7 @@ begin
   quem.OnKeyDown := soNum;
 end;
 
+// =========================================
 procedure TMask.defFoneFixo(quem: TEdit);
 begin
   addExecao(quem, 4);
@@ -861,8 +768,7 @@ begin
   else result := copy(param.ToString, 1, 2) + '.' + copy(Param.ToString, 3, 3) + '-' + copy(Param.ToString, 6, 3) ;
 end;
 
-//=====
-
+// =========================================
 function TMask.formatarCNPJ(param: Double): string;
 var
   str: string;
@@ -879,10 +785,10 @@ begin
         copy(str, 6, 3)  + '/' +
         copy(str, 9, 4) + '-' +
         copy(str, 13, 2);
-
     end;
 end;
-//=====
+
+// =========================================
 function TMask.formatarCPF(param: Double): string;
 begin
   if (param = 0) then Result := ''
@@ -893,16 +799,14 @@ begin
     end;
 end;
 
-//=====
-
+// =========================================
 function TMask.formatarCel(param: Double): string;
 begin
   if (param = 0) then Result := ''
   else result := '(' + copy(param.ToString, 1, 2) + ')' + copy(Param.ToString, 3, 5) + '-' + copy(Param.ToString, 8, 4) ;
 end;
 
-//=====
-
+// =========================================
 function TMask.formatarFone(param: Double): string;
 begin
   if (param = 0) then Result := ''
@@ -929,31 +833,23 @@ else
 end;
 
 
-//======
-
+// =========================================
 procedure TMask.soNum(Sender: TObject; var Key: Word; var KeyChar: Char;
   Shift: TShiftState);
 begin
   if (not (KeyChar in ['0'..'9'])) then KeyChar := #0;
 end;
 
-
-//======
-
-
+// =========================================
 procedure TMask.fechaRct(Sender: TObject);
 begin
   Tcontrol(Sender).Visible := false;
   TEdit (Tcontrol(Sender).Parent).SetFocus;
 end;
 
-
-
-//========================
-
+// =========================================
 procedure TMask.addExecao(quem: TEdit; funcao: integer);
 begin
-
   SetLength(listaExcecoes, posLista + 1);
   listaExcecoes[posLista].name := quem.Name;
   listaExcecoes[posLista].funcao := funcao;
@@ -961,23 +857,22 @@ begin
   posLista := posLista + 1;
 end;
 
-
+// =========================================
 function TMask.procuraPorExcecao(cmp: TComponent): integer;
 var
   nome: string;
-  tam: Integer;
-  I: Integer;
+  tam : Integer;
+  I   : Integer;
 begin
-
   Result := -1;
+  tam    := Length(listaExcecoes) - 1;
+  nome   := TEdit(cmp).Name;
 
-    tam := Length(listaExcecoes) - 1;
-    nome := TEdit(cmp).Name;
-
-    for I := 0 to tam  do
-      if listaExcecoes[I].name = nome then
-        Result := I;
+  for I := 0 to tam  do
+    if listaExcecoes[I].name = nome then
+      Result := I;
 end;
-end.
 
+
+end.
 
