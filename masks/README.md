@@ -1,9 +1,13 @@
 Funções de validação, mascaras e tratamento para:
 
-Email,<br> 
-CEP, 
-CNPJ, 
-CPF, Telefone celular, Telefone fixo, Placa de veicular no formato antigo e no formato mercosul.
+* Email,<br> 
+* CEP,<br> 
+* CNPJ,<br> 
+* CPF,<br> 
+* Telefone celular,<br> 
+* Telefone fixo,<br> 
+* Placa de veicular no formato antigo<br> 
+* Placa de veicular formato mercosul<br> 
 
 
 
