@@ -15,13 +15,11 @@ Funções de validação, mascaras e tratamento para:
 
 <p>Para o armazenamento em banco de dados os caracteres especiais são removidos (economizando espaço em disco), e para a exibição serão formatados com a mascara correta.</p>
 
-<p>Busca o endereço pelo CEP, unica função que necessita de conexão com a Internet.</p>
-
 <h3>Como usar:</h3>
 
 Basta  adicionar '<b>untMask.pas</b>' (não é necessário add o untBuscaCep.pas, mas deve ser adicionado ao projeto) no form que será usado.
-Defina quais Edits serão usados (o exemplo está no onCreate do Main.pas).
-As funções de validação, remoção dos caracteres especiais e a formatação para exibição estao no 'ConverterClick' do 'Main.pas'
-No evento 'FormPaint' do TForm que vc usará é necessário que adicione a função: validaAllEdtColor(Self), como no main.pas.
+<p>Defina quais Edits serão usados (o exemplo está no <b>onCreate</b> do <b>frmMain.pas</b>).</p>
+<p>As funções de validação, remoção dos caracteres especiais e a formatação para exibição estao no 'btValidarClick' do 'frmMain.pas'</p>
+<p>No evento 'FormPaint' do TForm que vc usará é necessário que adicione a função: validaAllEdtColor(Self), como no main.pas.</p>
 
-Delphi 12/Firemonkey.
+<p>Delphi 12/Firemonkey.</p>
