@@ -16,4 +16,4 @@ Defina quais Edits serão usados (o exemplo está no onCreate do Main.pas).
 As funções de validação, remoção dos caracteres especiais e a formatação para exibição estao no 'ConverterClick' do 'Main.pas'
 No evento 'FormPaint' do TForm que vc usará é necessário que adicione a função: validaAllEdtColor(Self), como no main.pas.
 
-Desenvolvido para Firemonkey.
+Delphi 12/Firemonkey.
