@@ -13,7 +13,7 @@ Funções de validação, máscaras e tratamento para:
 <p>A mascara é criada em <i>tempo de execução</i> alterando a cor do Edit (verde e vermelho) <b>indicando ao usuário</b> se o valor digitado está <b>correto ou não</b>. Quando o valor digitado estiver correto o Edit fica com a cor verde, caso esteja errado ele ficará vermelho.</p>
 <p>Funciona offline, com exeção do BuscaCEP, porem a mascara funciona off-line.</p>
 
-<p>Para o armazenamento em banco de dados os caracteres especiais são removidos (economizando espaço em disco), e para a exibição serão formatados com a mascara correta.</p>
+<p>Para o armazenamento em banco de dados os caracteres especiais podem ser removidos (economizando espaço em disco), e para a exibição serão formatados com a máscara correta.</p>
 
 <h3>Como usar:</h3>
 
