@@ -2,7 +2,8 @@ Funções de validação, mascaras e tratamento para:
 
 Email, 
 CEP, 
-CNPJ, CPF, Telefone celular, Telefone fixo, Placa de veicular no formato antigo e no formato mercosul.
+CNPJ, 
+CPF, Telefone celular, Telefone fixo, Placa de veicular no formato antigo e no formato mercosul.
 
 
 Quando o valor digitado estiver correto o Edit fica com a cor verde, caso esteja errado ele ficará vermelho.
