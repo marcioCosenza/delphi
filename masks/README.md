@@ -6,7 +6,8 @@ CNPJ,
 CPF, Telefone celular, Telefone fixo, Placa de veicular no formato antigo e no formato mercosul.
 
 
-Quando o valor digitado estiver correto o Edit fica com a cor verde, caso esteja errado ele ficará vermelho.
+
+	Quando o valor digitado estiver correto o Edit fica com a cor verde, caso esteja errado ele ficará vermelho.
 Toda a configuração é feita em tempo de execução, o que agilia o desenvolvimento.
 Busca o endereço pelo CEP.
 Funciona offline, com exeção do BuscaCEP, mas a mascara funciona off-line.
