@@ -3,7 +3,7 @@ unit frmMaim;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, System.StrUtils,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Edit, FMX.ListBox, untMask, FMX.Memo.Types,
   FMX.ScrollBox, FMX.Memo, System.Rtti, FMX.Grid.Style, FMX.Grid;
@@ -34,7 +34,7 @@ type
     Label4: TLabel;
     edtFoneCel: TEdit;
     GroupBox4: TGroupBox;
-    Converter: TButton;
+    btValidar: TButton;
     StringGrid1: TStringGrid;
     StringColumn1: TStringColumn;
     StringColumn2: TStringColumn;
@@ -43,14 +43,15 @@ type
     GroupBox5: TGroupBox;
     Label11: TLabel;
     Label12: TLabel;
-    edtPlacaOld: TEdit;
-    edtPlacaMS: TEdit;
+    edtPlOld: TEdit;
+    edtPlMS: TEdit;
     GroupBox6: TGroupBox;
     edtEmail: TEdit;
+    chkbxShowAlerta: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormPaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
-    procedure ConverterClick(Sender: TObject);
+    procedure btValidarClick(Sender: TObject);
   private
     { Private declarations }
     var mask: TMask;
@@ -67,16 +68,16 @@ implementation
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  mask := TMask.Create  (self);
+  mask := TMask.Create(self);
 
-  mask.defCEP(edtCEP, edtEnde, edtComple, edtBairro, edtCidade, CmbBxUF);
-  mask.defCPF(edtCPF);
-  mask.defCNPJ(edtCNPJ);
-  mask.defFoneFixo(edtFoneFixo);
-  mask.defFoneCel(edtFoneCel);
-  mask.defPlacaOld(edtPlacaOld);
-  mask.defPlacaMS(edtPlacaMS);
-  mask.defEmail(edtEmail);
+  mask.defCEP   (edtCEP, edtEnde, edtComple, edtBairro, edtCidade, CmbBxUF);
+  mask.defCPF   (edtCPF);
+  mask.defCNPJ  (edtCNPJ);
+  mask.defFFixo (edtFoneFixo);
+  mask.defCel   (edtFoneCel);
+  mask.defPlOld (edtPlOld);
+  mask.defPlMS  (edtPlMS);
+  mask.defEmail (edtEmail);
 
   mask.start(Self);
 end;
@@ -93,45 +94,48 @@ begin
 end;
 
 
-procedure TForm1.ConverterClick(Sender: TObject);
+procedure TForm1.btValidarClick(Sender: TObject);
 var
   CPFNum, CNPJNum, telFixNum, telCelNum, CEPNum: Double;
-  CPFstr, CNPJstr, telFixstr, telCelstr, CEPstr, placaOldstr, placaMSstr: string;
-  CPFBol, CNPJBol, telFixBol, telCelBol, CEPBol, placaOldBol, placaMSBol: Boolean;
+  CPFstr, CNPJstr, telFixstr, telCelstr, CEPstr, PlOldstr, PlMSstr: string;
+  CPFBol, CNPJBol, telFixBol, telCelBol, CEPBol, PlOldBol, PlMSBol: Boolean;
 
-  placaOldNum, placaMSNum: string;
-  email: string;
+  PlOldNum, PlMSNum: string;
+  email   : string;
   emailBol: Boolean;
 begin
 
-  // recupera apenas os numeros
-  CPFNum      :=  StrToCurr(mask.limparTxt(edtCPF.Text));
-  CNPJNum     :=  StrToCurr(mask.limparTxt(edtCNPJ.Text));
-  telFixNum   :=  StrToCurr(mask.limparTxt(edtFoneFixo.Text));
-  telCelNum   :=  StrToCurr(mask.limparTxt(edtFoneCel.Text));
-  CEPNum      :=  StrToCurr(mask.limparTxt(edtCEP.Text));
-  placaOldNum :=  mask.limparTxt(edtPlacaOld.Text);
-  placaMSNum  :=  mask.limparTxt(edtPlacaMS.Text);
-  email       := edtEmail.Text;
+  //define se ser√° exibido uma mensagem de alerta
+  mask.setExibirMSG(chkbxShowAlerta.IsChecked);
 
-  //aplica a mascara de exibiÁ„o
-  CPFstr      := mask.formatarCPF(CPFNum);
-  CNPJstr     := mask.formatarCNPJ(CNPJNum);
-  telFixstr   := mask.formatarFone(telFixNum);
-  telCelstr   := mask.formatarCel(telCelNum);
-  CEPstr      := mask.formatarCEP(CEPNum);
-  placaOldstr := mask.formatarPlacaOld(placaOldNum);
-  placaMSstr  := mask.formatarPlacaMS(placaMSNum);
+  // recupera apenas os numeros
+  CPFNum     := StrToCurr (mask.limparTxt (edtCPF.Text));
+  CNPJNum    := StrToCurr (mask.limparTxt (edtCNPJ.Text));
+  telFixNum  := StrToCurr (mask.limparTxt (edtFoneFixo.Text));
+  telCelNum  := StrToCurr (mask.limparTxt (edtFoneCel.Text));
+  CEPNum     := StrToCurr (mask.limparTxt (edtCEP.Text));
+  PlOldNum   := mask.limparTxt (edtPlOld.Text);
+  PlMSNum    := mask.limparTxt (edtPlMS.Text);
+  email      := edtEmail.Text;
+
+  //aplica a mascara de exibi√ß√£o
+  CPFstr    := mask.formatCPF(CPFNum);
+  CNPJstr   := mask.formatCNPJ(CNPJNum);
+  telFixstr := mask.formatFone(telFixNum);
+  telCelstr := mask.formatCel(telCelNum);
+  CEPstr    := mask.formatCEP(CEPNum);
+  PlOldstr  := mask.formatPlOld(PlOldNum);
+  PlMSstr   := mask.formatPlMS(PlMSNum);
 
   //valida se esta correto
-  CPFBol      := mask.isCPF(CPFstr);
-  CNPJBol     := mask.isCNPJ(CNPJstr);
-  telFixBol   := mask.isFone(telFixstr);
-  telCelBol   := mask.isCel(telCelstr);
-  CEPBol      := mask.isCEP(CEPstr);
-  placaOldBol := mask.isPlacaOld(placaOldstr);
-  placaMSBol  := mask.isPlacaMS(placaMSNum);
-  emailBol    := mask.isEmail(email);
+  CPFBol    := mask.isCPF(CPFstr);
+  CNPJBol   := mask.isCNPJ(CNPJstr);
+  telFixBol := mask.isFone(telFixstr);
+  telCelBol := mask.isCel(telCelstr);
+  CEPBol    := mask.isCEP(CEPstr);
+  PlOldBol  := mask.isPlOld(PlOldstr);
+  PlMSBol   := mask.isPlMS(PlMSstr);
+  emailBol  := mask.isEmail(email);
 
   //exibe os valores
   StringGrid1.Cells[0,0] := 'CPF';
@@ -139,8 +143,8 @@ begin
   StringGrid1.Cells[0,2] := 'Telefone Fixo';
   StringGrid1.Cells[0,3] := 'Telefone Celular';
   StringGrid1.Cells[0,4] := 'CEP';
-  StringGrid1.Cells[0,5] := 'Placa antiga';
-  StringGrid1.Cells[0,6] := 'Placa MercoSul';
+  StringGrid1.Cells[0,5] := 'Pl antiga';
+  StringGrid1.Cells[0,6] := 'Pl MercoSul';
   StringGrid1.Cells[0,7] := 'Email';
 
   //somente os numeros
@@ -149,9 +153,9 @@ begin
   StringGrid1.Cells[1,2] := telFixNum.ToString;
   StringGrid1.Cells[1,3] := telCelNum.ToString;
   StringGrid1.Cells[1,4] := CEPNum.ToString;
-  StringGrid1.Cells[1,5] := placaOldNum;
-  StringGrid1.Cells[1,6] := placaMSNum;
-  StringGrid1.Cells[1,7] := 'N„o aplica';
+  StringGrid1.Cells[1,5] := PlOldNum;
+  StringGrid1.Cells[1,6] := PlMSNum;
+  StringGrid1.Cells[1,7] := 'N√£o aplica';
 
   //formatado
   StringGrid1.Cells[2,0] := CPFstr;
@@ -159,36 +163,20 @@ begin
   StringGrid1.Cells[2,2] := telFixstr;
   StringGrid1.Cells[2,3] := telCelstr;
   StringGrid1.Cells[2,4] := CEPstr;
-  StringGrid1.Cells[2,5] := placaOldstr;
-  StringGrid1.Cells[2,6] := placaMSstr;
+  StringGrid1.Cells[2,5] := PlOldstr;
+  StringGrid1.Cells[2,6] := PlMSstr;
   StringGrid1.Cells[2,7] := email;
 
   //validacao
-  if (CPFBol) then StringGrid1.Cells[3,0] :='OK'
-  else StringGrid1.Cells[3,0] := 'NOK';
-
-  if (CNPJBol) then StringGrid1.Cells[3,1] :='OK'
-  else StringGrid1.Cells[3,1] := 'NOK';
-
-  if (telFixBol) then StringGrid1.Cells[3,2] :='OK'
-  else StringGrid1.Cells[3,2] := 'NOK';
-
-  if (telCelBol) then StringGrid1.Cells[3,3] :='OK'
-  else StringGrid1.Cells[3,3] := 'NOK';
-
-  if (CEPBol) then StringGrid1.Cells[3,4] :='OK'
-  else StringGrid1.Cells[3,4] := 'NOK';
-
-  if (placaOldBol) then StringGrid1.Cells[3,5] :='OK'
-  else StringGrid1.Cells[3,5] := 'NOK';
-
-  if (placaMSBol) then StringGrid1.Cells[3,6] :='OK'
-  else StringGrid1.Cells[3,6] := 'NOK';
-
-  if (emailBol) then StringGrid1.Cells[3,7] :='OK'
-  else StringGrid1.Cells[3,7] := 'NOK';
+  StringGrid1.Cells[3,0] := ifThen (CPFBol,    'OK','NOK');
+  StringGrid1.Cells[3,1] := ifThen (CNPJBol,   'OK','NOK');
+  StringGrid1.Cells[3,2] := ifThen (telFixBol, 'OK','NOK');
+  StringGrid1.Cells[3,3] := ifThen (telCelBol, 'OK','NOK');
+  StringGrid1.Cells[3,4] := ifThen (CEPBol,    'OK','NOK');
+  StringGrid1.Cells[3,5] := ifThen (PlOldBol,  'OK','NOK');
+  StringGrid1.Cells[3,6] := ifThen (PlMSBol,   'OK','NOK');
+  StringGrid1.Cells[3,7] := ifThen (emailBol,  'OK','NOK');
 end;
 
 
 end.
-
