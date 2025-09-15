@@ -9,8 +9,8 @@ Funções de validação, máscaras e tratamento para:
 * Placa de veicular no formato antigo;<br> 
 * Placa de veicular formato mercosul.<br> 
 
-<p>A classe <b>TMask</b> faz todo o trabalho de <u>validação e máscara</u> para as opções acima descritas, basta especificar quais Edits serão usados para cada campo. </p>
-<p>A mascara é criada em <i>tempo de execução</i> alterando a cor do Edit (verde e vermelho) <u>indicando ao usuário</u> se o valor digitado está <u>correto ou não</u>. Quando o valor digitado estiver correto o Edit fica com a cor verde, caso esteja errado ele ficará vermelho.</p>
+<p>A classe <b>TMask</b> faz todo o trabalho de <b>validação e máscara</b> para as opções acima descritas, basta especificar quais Edits serão usados para cada campo. </p>
+<p>A mascara é criada em <i>tempo de execução</i> alterando a cor do Edit (verde e vermelho) <b>indicando ao usuário</b> se o valor digitado está <b>correto ou não</b>. Quando o valor digitado estiver correto o Edit fica com a cor verde, caso esteja errado ele ficará vermelho.</p>
 <p>Funciona offline, com exeção do BuscaCEP, porem a mascara funciona off-line.</p>
 
 <p>Para o armazenamento em banco de dados os caracteres especiais são removidos (economizando espaço em disco), e para a exibição serão formatados com a mascara correta.</p>
