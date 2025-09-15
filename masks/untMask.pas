@@ -31,12 +31,12 @@ Type TMask = Class
 
     //format
     function formatCEP   (param: Double): string;
-    function formatFone  (param: Double):  string;
-    function formatCel   (param: Double):  string;
-    function formatCPF   (param: Double):  string;
-    function formatCNPJ  (param: Double):  string;
-    function formatPlOld (param: string):  string;
-    function formatPlMS  (param: string):  string;
+    function formatFone  (param: Double): string;
+    function formatCel   (param: Double): string;
+    function formatCPF   (param: Double): string;
+    function formatCNPJ  (param: Double): string;
+    function formatPlOld (param: string): string;
+    function formatPlMS  (param: string): string;
 
     //validacao
     function isCNPJ  (param: string): boolean;
@@ -1027,5 +1027,6 @@ begin
 end;
 
 end.
+
 
 
