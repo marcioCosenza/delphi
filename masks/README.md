@@ -17,9 +17,9 @@ Funções de validação, máscaras e tratamento para:
 
 <h3>Como usar:</h3>
 
-Basta  adicionar '<b>untMask.pas</b>' (não é necessário add o untBuscaCep.pas, mas deve ser adicionado ao projeto) no form que será usado.
+Basta  adicionar '<b>untMask.pas</b>' no form que será usado.
 <p>Defina quais Edits serão usados (o exemplo está no <b>onCreate</b> do <b>frmMain.pas</b>).</p>
-<p>As funções de validação, remoção dos caracteres especiais e a formatação para exibição estao no 'btValidarClick' do 'frmMain.pas'</p>
-<p>No evento 'FormPaint' do TForm que vc usará é necessário que adicione a função: validaAllEdtColor(Self), como no main.pas.</p>
+<p>As funções de validação, remoção dos caracteres especiais e a formatação para exibição estão no 'btValidarClick' do 'frmMain.pas'</p>
+<p>O evento 'FormPaint' do TForm que vc usará é necessário que adicione a função: validaAllEdtColor(Self), como no main.pas.</p>
 
-<p>Delphi 12/Firemonkey.</p>
+<p>Feito com Delphi 12/Firemonkey.</p>
