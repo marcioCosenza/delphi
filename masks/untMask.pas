@@ -130,8 +130,8 @@ Type TMask = Class
     procedure foneCelKeyUp  (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure CPFKeyUp      (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure CNPJKeyUp     (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
-    procedure PlOldKeyUp (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
-    procedure PlMSKeyUp  (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure PlOldKeyUp    (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure PlMSKeyUp     (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure emailKeyUp    (Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 
     procedure buscaCep(Sender: TObject);
@@ -1027,4 +1027,5 @@ begin
 end;
 
 end.
+
 
