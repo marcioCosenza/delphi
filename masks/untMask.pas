@@ -20,8 +20,8 @@ Type TMask = Class
     function  limparTxt (param: string):string;//remove os caracteres especiais, retornando apenas os numeros
 
     //mensagem de nao conformidade
-    procedure setExibirMSG(param: boolean);
-    procedure ShowMSG(msg: string);
+    procedure setExibirMSG (param: boolean);
+    procedure ShowMSG      (msg: string);
 
     //define os edts
     procedure defCEP   (cep, endereco, complemento, bairro, cidade: TEdit; UF: TComboBox);
@@ -1021,4 +1021,5 @@ begin
 end;
 
 end.
+
 
