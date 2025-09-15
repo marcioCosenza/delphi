@@ -1,4 +1,4 @@
-Funções de validação, mascaras e tratamento para:
+Funções de validação, máscaras e tratamento para:
 
 * Email;<br> 
 * CEP;<br> 
