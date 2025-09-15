@@ -57,22 +57,15 @@ Type TMask = Class
     procedure validaEdtColor (Sender: TObject);
 
     //vefifica se esta correto
-    function  validarGeral     (edt: TComponent; tam: integer; exp: string; op: integer): boolean;
-    procedure validarCEP      (Sender: TObject);
-    procedure validarFone     (Sender: TObject);
-    procedure validarCel      (Sender: TObject);
-    procedure validarCPF      (Sender: TObject);
-    procedure validarCNPJ     (Sender: TObject);
+    function  validarGeral (edt: TComponent; tam: integer; exp: string; op: integer): boolean;
+    procedure validarCEP   (Sender: TObject);
+    procedure validarFone  (Sender: TObject);
+    procedure validarCel   (Sender: TObject);
+    procedure validarCPF   (Sender: TObject);
+    procedure validarCNPJ  (Sender: TObject);
     procedure validarPlOld (Sender: TObject);
     procedure validarPlMS  (Sender: TObject);
-    procedure validarEmail    (Sender: TObject);
-
-    //Auxilio
-    procedure fechaRct(Sender: TObject);
-    procedure soNum   (Sender: TObject; var Key: Word;  var KeyChar: Char; Shift: TShiftState);
-    procedure addExecao(quem: TEdit; funcao: integer);
-    function  procuraPorExcecao(cmp: TComponent): integer;
-    procedure maisculas(Sender: TObject; var Key: Word;  var KeyChar: Char; Shift: TShiftState);
+    procedure validarEmail (Sender: TObject);
 
     //OnKeyUp
     procedure keyYUpGeral   (Sender: TObject; var KeyChar: Char; var tamConst: integer; var lista: array of charList);
@@ -87,37 +80,43 @@ Type TMask = Class
 
     procedure buscaCep(Sender: TObject);
 
+    //Auxilio
+    procedure fechaRct(Sender: TObject);
+    procedure soNum   (Sender: TObject; var Key: Word;  var KeyChar: Char; Shift: TShiftState);
+    procedure addExecao(quem: TEdit; funcao: integer);
+    function  procuraPorExcecao(cmp: TComponent): integer;
+    procedure maisculas(Sender: TObject; var Key: Word;  var KeyChar: Char; Shift: TShiftState);
+
     const corEdtOk  = $2E09F611;
     const corEdtNOk = $64C85D5D;
-//    const corEdtBranco = $FFFFFFAA;
 
     //constantes usada para o controle de qual função será usada
-    const vcCEP       = 0;
-    const vcCPF       = 1;
-    const vcCNPJ      = 2;
-    const vcTelCel    = 3;
-    const vcTelFix    = 4;
+    const vcCEP    = 0;
+    const vcCPF    = 1;
+    const vcCNPJ   = 2;
+    const vcTelCel = 3;
+    const vcTelFix = 4;
     const vcPlOld  = 5;
     const vcPlMS   = 6;
-    const vcEmail     = 7;
+    const vcEmail  = 7;
 
     //qtd de caracteres de cada função (sem os caracteres especiais)
-    const tamCNPJ  = 14;
-    const tamCPF   = 11;
-    const tamCEP   =  8;
-    const tamCel   = 11;
-    const tamFone  = 10;
-    const tamPl =  7;
+    const tamCNPJ = 14;
+    const tamCPF  = 11;
+    const tamCEP  =  8;
+    const tamCel  = 11;
+    const tamFone = 10;
+    const tamPl   =  7;
 
     //expressões regulares para as validações
-    const expCEP      = '^\d{2}.\d{3}-\d{3}$';
-    const expCPF      = '^\d{3}.\d{3}.\d{3}-\d{2}$';
-    const expCNPJ     = '^\d{2}.\d{3}.\d{3}/\d{4}-\d{2}$';
-    const expTelCel   = '^\(\d{2}\)\d{5}-\d{4}$';
-    const expTelFix   = '^\(\d{2}\)\d{4}-\d{4}$';
-    const expPlOld = '^[A-Z]{3}-\d{4}$';
-    const expPlMS  = '^[A-Z]{3}\ \d{1}[A-Z]{1}\d{2}$';
-    const expEmail    = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    const expCEP    = '^\d{2}.\d{3}-\d{3}$';
+    const expCPF    = '^\d{3}.\d{3}.\d{3}-\d{2}$';
+    const expCNPJ   = '^\d{2}.\d{3}.\d{3}/\d{4}-\d{2}$';
+    const expTelCel = '^\(\d{2}\)\d{5}-\d{4}$';
+    const expTelFix = '^\(\d{2}\)\d{4}-\d{4}$';
+    const expPlOld  = '^[A-Z]{3}-\d{4}$';
+    const expPlMS   = '^[A-Z]{3}\ \d{1}[A-Z]{1}\d{2}$';
+    const expEmail  = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
 
     type excecoes = record
       name  : string;
@@ -1022,3 +1021,4 @@ begin
 end;
 
 end.
+
