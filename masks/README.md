@@ -1,13 +1,13 @@
 Funções de validação, mascaras e tratamento para:
 
-* Email,<br> 
-* CEP,<br> 
-* CNPJ,<br> 
-* CPF,<br> 
-* Telefone celular,<br> 
-* Telefone fixo,<br> 
-* Placa de veicular no formato antigo<br> 
-* Placa de veicular formato mercosul<br> 
+* Email;<br> 
+* CEP;<br> 
+* CNPJ;<br> 
+* CPF;<br> 
+* Telefone celular;<br> 
+* Telefone fixo;<br> 
+* Placa de veicular no formato antigo;<br> 
+* Placa de veicular formato mercosul.<br> 
 
 <p>A classe <b>TMask</b> faz todo o trabalho de <u>validação e máscara</u> para as opções acima descritas, basta especificar quais Edits serão usados para cada campo. </p>
 <p>A mascara é criada em <i>tempo de execução</i> alterando a cor do Edit de verde e vermelho indicando ao usuário se o valor digitado está correto ou não.Quando o valor digitado estiver correto o Edit fica com a cor verde, caso esteja errado ele ficará vermelho.</p>
