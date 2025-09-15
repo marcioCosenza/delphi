@@ -3,42 +3,9 @@ unit untBuscaCEP;
 interface
 
 uses
-  System.JSON,
-  System.SysUtils,
-  System.Types,
-  System.Classes,
-
-
-  FMX.Forms,
-  FMX.Objects,
-  FMX.Types,
-
-
-
-  FMX.Controls,
-
-  FMX.Graphics,
-  FMX.Dialogs,
-  FMX.Controls.Presentation,
-  FMX.StdCtrls,
-  FMX.WebBrowser,
-  FMX.Grid.Style,
-  FMX.Grid,
-  FMX.ScrollBox,
-  FMX.Edit,
-  FMX.Layouts,
-
-  FMX.ListBox,
-  FMX.Memo.Types,
-  FMX.Memo,
-  FMX.EditBox,
-  FMX.SpinBox,
-
-
-  REST.Client,
-  IPPeerClient,
-  Wininet
-  ;
+  System.JSON, System.SysUtils, System.Types,
+  FMX.Forms, FMX.Objects, FMX.Types, FMX.Dialogs, FMX.StdCtrls,
+  REST.Client, Wininet;
 
 Type TBuscaCEP = Class
   public
@@ -48,7 +15,6 @@ Type TBuscaCEP = Class
     procedure resgatar(param: string);
     function  getStatus():Integer;
 
-
     function  getLogradouro() :string;
     function  getBairro():     string;
     function  getUF():         string;
@@ -56,10 +22,7 @@ Type TBuscaCEP = Class
     function  getComplemento():string;
 
   private
-
-
     var
-
       logradouro  :string;
       bairro      :string;
       estado      :string;
@@ -67,12 +30,8 @@ Type TBuscaCEP = Class
       complemento :string;
 
       status      : Integer;    // 0: OK; 1: desconectado; 2: falha ao localizar registro; 3: digitado incorretamente
-      rctFundo    : TRectangle; //usado para exibir msg de aguarde enquantÛ procura o CEP
-
-
+      rctFundo    : TRectangle; //usado para exibir msg de aguarde enquant√≥ procura o CEP
 End;
-
-
 
 implementation
 
@@ -87,9 +46,7 @@ var
   RESTRequest  : TRESTRequest;
   RESTResponse : TRESTResponse;
   flags        : dword;
-
-
-  mask: TMask;
+  mask         : TMask;
 begin
 
   logradouro  := '';
@@ -97,17 +54,13 @@ begin
   estado      := '';
   cidade      := '';
   complemento := '';
+  status      := 2; // seta como nao encontrado, caso encontre ou 'sem conexao' o valor ser√° alterado
 
-
-  status := 2; // seta como nao encontrado, caso encontre ou 'sem conexao' o valor ser· alterado
-
-  // valida se o CEP foi digitado corretamente
   mask := TMask.create(nil);
 
   if (not(mask.isCEP(param))) then status := 3
   else
     begin
-
       param:=  mask.limparTxt(param);
       mask.Destroy;
 
@@ -121,13 +74,11 @@ begin
           RESTRequest.Response := RESTResponse;
           RESTClient.BaseURL   := 'https://viacep.com.br/ws/' + param + '/json';
 
-
           try
             RESTRequest.Execute;
           except
-              status := 4;
+            status := 4;
           end;
-
 
           data := RESTResponse.JSONValue as TJSONObject;
           try
@@ -140,39 +91,30 @@ begin
                 cidade      := data.Values['localidade'].Value;
                 complemento := data.Values['complemento'].Value;
               end;
-
-
-
           finally
-
             case  (getStatus()) of
-              1: ShowMessage('N„o foi possÌvel resgatar as informaÁıes');
+              1: ShowMessage('N√£o foi poss√≠vel resgatar as informa√ß√µes');
               2: ShowMessage('Verifique se foi digitado corretamente');
-              3: ShowMessage('O CEP digitado È inv·lido');
-              4: ShowMessage('A conex„o atingiu o tempo limite');
+              3: ShowMessage('O CEP digitado √© inv√°lido');
+              4: ShowMessage('A conex√£o atingiu o tempo limite');
             end;
-
-
             FreeAndNil(data);
           end;
        end;
 
     end;
-
 end;
 
 
 constructor TBuscaCEP.create(frm: TForm);
 var
-  rctBase: TRectangle;
-  lbl: TLabel;
-  pBar: TAniIndicator;
-  tamRctW, tamRctH: integer;
-  I: Integer;
-
+  rctBase : TRectangle;
+  lbl     : TLabel;
+  pBar    : TAniIndicator;
+  tamRctW : integer;
+  tamRctH : integer;
+  I       : Integer;
 begin
-
-
   // fundo transparente
   rctFundo := TRectangle.Create(frm);
   rctFundo.Parent := frm;
@@ -180,27 +122,23 @@ begin
   rctFundo.Fill.Color := $C8BABABA;
   rctFundo.Visible := True;
 
-
   // rectangle principal
   tamRctW := 300;
   tamRctH := 230;
 
   rctBase := TRectangle.Create(rctFundo);
-  rctBase.Parent := rctFundo;
-  rctBase.Align := TAlignLayout.Center;
-  rctBase.Width := tamRctW;
-  rctBase.Height := tamRctH;
-  rctBase.Fill.Color := $AAAAAAAA;
-  rctBase.Padding.Top := 30;
+  rctBase.Parent         := rctFundo;
+  rctBase.Align          := TAlignLayout.Center;
+  rctBase.Width          := tamRctW;
+  rctBase.Height         := tamRctH;
+  rctBase.Fill.Color     := $AAAAAAAA;
+  rctBase.Padding.Top    := 30;
   rctBase.Padding.Bottom := 30;
-  rctBase.Visible := True;
+  rctBase.Visible        := True;
 
-  //labels
   for I := 1 to 2 do
     begin
-
       lbl := TLabel.Create(rctBase);
-
       case I of
         1:begin
             lbl.Align := TAlignLayout.Bottom;
@@ -215,14 +153,13 @@ begin
           end;
       end;
 
-      lbl.Parent := rctBase;
+      lbl.Parent  := rctBase;
       lbl.StyledSettings := lbl.StyledSettings - [TStyledSetting.Size];
       lbl.TextSettings.HorzAlign := TTextAlign.Center;
-      lbl.Width := tamRctW;
-      lbl.Height := 40;
+      lbl.Width   := tamRctW;
+      lbl.Height  := 40;
       lbl.Visible := True;
     end;
-
 
   //indicador de tempo
   pBar := TAniIndicator.Create(rctBase);
@@ -230,7 +167,6 @@ begin
   pBar.Align := TAlignLayout.Center;
   pBar.Enabled := true;
   pBar.Visible := True;
-
 end;
 
 destructor TBuscaCEP.destroy;
@@ -271,8 +207,3 @@ begin
 end;
 
 end.
-
-
-
-
-
