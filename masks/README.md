@@ -9,7 +9,8 @@ Funciona offline, com exeção do BuscaCEP, mas a mascara funciona off-line.
 Função para remover os caracteres especiais para o armazenamento em banco de dados (apenas os nnumeros devem ser gravados a fim de economizar espaço em disco).
 Funções para formatar corretamente os valores numéricos com a mascara correta.
 
-Usage:
+Como usar:
+
 Basta  adicionar 'untMask.pas' (não é necessário add o untBuscaCep.pas, mas deve ser adicionado ao projeto) no form que será usado.
 Defina quais Edits serão usados (o exemplo está no onCreate do Main.pas).
 As funções de validação, remoção dos caracteres especiais e a formatação para exibição estao no 'ConverterClick' do 'Main.pas'
