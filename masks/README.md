@@ -1,4 +1,4 @@
-Funções de validação e tratamento para:
+Funções de validação, mascaras e tratamento para:
 
 Email, CEP, CNPJ, CPF, Telefone celular, Telefone fixo, Placa de veicular no formato antigo e no formato mercoSul.
 
