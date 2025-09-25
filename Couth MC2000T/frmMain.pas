@@ -5,17 +5,11 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, CPDrv, Vcl.StdCtrls,
-  untMC2000T2, Vcl.Tabs, Vcl.ComCtrls, Vcl.ExtCtrls;
+  untMC2000T2, Vcl.Tabs, Vcl.ComCtrls, Vcl.ExtCtrls, System.UITypes, Vcl.Grids;
 
 type
   TFormMain = class(TForm)
     Panel4: TPanel;
-    Panel2: TPanel;
-    GroupBox2: TGroupBox;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    Button4: TButton;
     Panel3: TPanel;
     GroupBox1: TGroupBox;
     Label1: TLabel;
@@ -34,18 +28,35 @@ type
     edtSpeed: TEdit;
     edtPosY: TEdit;
     edtDens: TEdit;
-    Button5: TButton;
-    PageControl1: TPageControl;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    TabSheet3: TTabSheet;
     Panel5: TPanel;
     Panel6: TPanel;
     Panel1: TPanel;
     GroupBox3: TGroupBox;
     Button6: TButton;
     Button7: TButton;
-    procedure Button5Click(Sender: TObject);
+    CommPortDriver1: TCommPortDriver;
+    StringGrid1: TStringGrid;
+    Panel2: TPanel;
+    GroupBox2: TGroupBox;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    GroupBox4: TGroupBox;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    RadioButton3: TRadioButton;
+    edtDados: TEdit;
+    Label9: TLabel;
+    Button5: TButton;
+    Panel7: TPanel;
+    Panel8: TPanel;
+    BttnAdd: TButton;
+    BttnLimpar: TButton;
+    BttnEnviar: TButton;
+    Panel9: TPanel;
+    Panel10: TPanel;
+    procedure BttnEnviarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
@@ -61,22 +72,14 @@ type
     procedure edtDensKeyPress(Sender: TObject; var Key: Char);
     procedure edtSpeedKeyPress(Sender: TObject; var Key: Char);
     procedure edtLargKeyPress(Sender: TObject; var Key: Char);
+    procedure BttnAddClick(Sender: TObject);
+    procedure BttnLimparClick(Sender: TObject);
+    procedure Panel7Click(Sender: TObject);
   private
     { Private declarations }
 
     procedure habilitar(param: boolean);
-    procedure soNum(KeyChar: char);
-    function  valRange(funcao: integer): boolean;
-
-    type itemFuncao = record
-        funcao: string;
-        min: integer;
-        max: integer;
-
-    end;
-    var
-      item: itemFuncao;
-      listFuncaoes: array[0..10] of itemFuncao;
+    function soNum(KeyChar: char): char;
 
   public
     { Public declarations }
@@ -93,88 +96,52 @@ implementation
 
 procedure TFormMain.FormCreate(Sender: TObject);
 var
-  I: Integer;
-  lbl: TLabel;
+  I     : Integer;
+  titulo: string;
+
+
+
 begin
+  habilitar(False);
+  MC2000T2 := TMC2000T2.create(Self);
 
 
-for I := 0 to 10 do
-  begin
 
+
+  for I := 0 to 7 do
+    begin
+    titulo := MC2000T2.getItemFuncao(I)  + ' (' + MC2000T2.getItemMin(I).ToString() + '/' + MC2000T2.getItemMax(I).ToString() + ')';
     case I of
-
-    0:begin
-        item.funcao := 'Altura';
-        item.min    := 0;
-        item.max    := 400;
-        lbl         := Label1;
-      end;
-
-    1:begin
-        item.funcao := 'Largura';
-        item.min    := 0;
-        item.max    := 200;
-        lbl         := Label6;
-      end;
-{
-    2:begin
-        item.funcao := 'Espaçamento';
-        item.min    := 0;
-        item.max    := 200;
-        lbl         := Label1
-      end;
- }
-    3:begin
-        item.funcao := 'Densidade';
-        item.min    := 1;
-        item.max    := 101;
-        lbl         := Label5;
-      end;
-
-    4:begin
-        item.funcao := 'Pos X';
-        item.min    := 0;
-        item.max    := 10000;
-        lbl         := Label2;
-      end;
-
-    5:begin
-        item.funcao := 'Pos Y';
-        item.min    := 0;
-        item.max    := 10000;
-        lbl         := Label4;
-      end;
-
-    6:begin
-        item.funcao := 'Angulo';
-        item.min    := 0;
-        item.max    := 3600;
-        lbl         := Label8;
-      end;
-
-    7:begin
-        item.funcao := 'Velocidade';
-        item.min    := 1;
-        item.max    := 10;
-        lbl         := Label7;
-      end;
-
-    8:begin
-        item.funcao := 'Força';
-        item.min    := 1;
-        item.max    := 10;
-        lbl         := Label3;
-      end;
-
+      0:Label1.Caption := titulo;
+      1:Label6.Caption := titulo;
+      2:Label5.Caption := titulo;
+      3:Label2.Caption := titulo;
+      4:Label4.Caption := titulo;
+      5:Label8.Caption := titulo;
+      6:Label7.Caption := titulo;
+      7:Label3.Caption := titulo;
+  //    8:LabelXX.Caption := titulo;
     end;
 
-    listFuncaoes[I] := item;
-    lbl.Caption := item.funcao + ' (' + item.min.ToString() + '/' +item.max.ToString()  + ')'
+
+
   end;
 
 
-  habilitar(False);
-  MC2000T2 := TMC2000T2.create;
+
+//for I := 0 to 8 do
+  StringGrid1.DefaultColWidth := 60;
+  StringGrid1.Font.Size := 14;
+
+StringGrid1.Cells[0,0] := 'Pos X';
+StringGrid1.Cells[1,0] := 'Pos Y';
+StringGrid1.Cells[2,0] := 'Força';
+StringGrid1.Cells[3,0] := 'Dens.';
+StringGrid1.Cells[4,0] := 'Ang.';
+StringGrid1.Cells[5,0] := 'Vel.';
+StringGrid1.Cells[6,0] := 'Alt';
+StringGrid1.Cells[7,0] := 'Larg';
+
 end;
 
 
@@ -193,21 +160,10 @@ begin
   MC2000T2.Cancelar();
 end;
 
-procedure TFormMain.Button5Click(Sender: TObject);
+procedure TFormMain.BttnEnviarClick(Sender: TObject);
 begin
-  {}
-//  MC2000T2.setLinha    (I);
-//  MC2000T2.setDados    (); // Os dados que serão marcados
-  MC2000T2.setAltChar  (StrToInt(edtAltura.Text)); // Altura do caractere
-  MC2000T2.setLargChar (StrToInt(edtLarg.Text));   // Largura do caractere
-  MC2000T2.setDens     (StrToInt(edtDens.Text));   // Densidade
-  MC2000T2.setPosX     (StrToInt(edtPosX.Text));   // Posição X
-  MC2000T2.setPosY     (StrToInt(edtPosY.Text));   // Posição Y
-  MC2000T2.setAngulo   (StrToInt(edtAngulo.Text)); // Angulo da marcação
-  MC2000T2.setSpeed    (StrToInt(edtSpeed.Text));  // Velocidade da marcação
-  MC2000T2.setForca    (StrToInt(edtForca.Text));  // Força da marcação
-  //    if (MC2000T2.enviar()) then
-  {}
+  if (MC2000T2.enviar()) then MessageDlg('Dados enviados com sucesso!', mtInformation, [mbok], 0)
+  else MessageDlg('Falha ao enviar os dados a marcadora Couth!', mtError, [mbok], 0);
 end;
 
 
@@ -218,47 +174,101 @@ end;
 
 procedure TFormMain.Button7Click(Sender: TObject);
 begin
-  habilitar(True);
+//  if (MC2000T2.conectar())  then
+    begin
+      habilitar(True);
+      BttnEnviar.Enabled := false;
+      BttnLimpar.Enabled := false;
+    end;
+end;
+
+procedure TFormMain.BttnAddClick(Sender: TObject);
+begin
+  MC2000T2.addLinha    ();
+  MC2000T2.setAltChar  (StrToInt(edtAltura.Text)); // Altura do caractere
+  MC2000T2.setLargChar (StrToInt(edtLarg.Text));   // Largura do caractere
+  MC2000T2.setDens     (StrToInt(edtDens.Text));   // Densidade
+  MC2000T2.setPosX     (StrToInt(edtPosX.Text));   // Posição X
+  MC2000T2.setPosY     (StrToInt(edtPosY.Text));   // Posição Y
+  MC2000T2.setAngulo   (StrToInt(edtAngulo.Text)); // Angulo da marcação
+  MC2000T2.setSpeed    (StrToInt(edtSpeed.Text));  // Velocidade da marcação
+  MC2000T2.setForca    (StrToInt(edtForca.Text));  // Força da marcação
+  MC2000T2.setDados    (edtDados.Text);            // Os dados que serão marcados
+
+
+
+  BttnEnviar.Enabled := True;
+  BttnLimpar.Enabled := True;
+
+  StringGrid1.RowCount := StringGrid1.RowCount + 1;
+  StringGrid1.Cells[0, StringGrid1.RowCount -1] := edtPosX.Text;
+  StringGrid1.Cells[1, StringGrid1.RowCount -1] := edtPosY.Text;
+  StringGrid1.Cells[2, StringGrid1.RowCount -1] := edtForca.Text;
+  StringGrid1.Cells[3, StringGrid1.RowCount -1] := edtDens.Text;
+  StringGrid1.Cells[4, StringGrid1.RowCount -1] := edtAngulo.Text;
+  StringGrid1.Cells[5, StringGrid1.RowCount -1] := edtSpeed.Text;
+  StringGrid1.Cells[6, StringGrid1.RowCount -1] := edtAltura.Text;
+  StringGrid1.Cells[7, StringGrid1.RowCount -1] := edtLarg.Text;
+end;
+
+procedure TFormMain.BttnLimparClick(Sender: TObject);
+begin
+  MC2000T2.iniciarLista();
+
+  edtAltura.Text := '0';
+  edtLarg.Text   := '0';
+  edtDens.Text   := '1';
+  edtPosX.Text   := '0';
+  edtPosY.Text   := '0';
+  edtAngulo.Text := '0';
+  edtSpeed.Text  := '1';
+  edtForca.Text  := '1';
+//  MC2000T2.setDados    (); // Os dados que serão marcados
+
+  BttnEnviar.Enabled := False;
+  BttnLimpar.Enabled := False;
+
+  StringGrid1.RowCount := 1;
 end;
 
 procedure TFormMain.edtAlturaKeyPress(Sender: TObject; var Key: Char);
 begin
-  soNum(Key);
+ key := soNum(Key);
 end;
 
 procedure TFormMain.edtAnguloKeyPress(Sender: TObject; var Key: Char);
 begin
-  soNum(Key);
+ key := soNum(Key);
 end;
 
 procedure TFormMain.edtDensKeyPress(Sender: TObject; var Key: Char);
 begin
-  soNum(Key);
+ key := soNum(Key);
 end;
 
 procedure TFormMain.edtForcaKeyPress(Sender: TObject; var Key: Char);
 begin
-  soNum(Key);
+ key := soNum(Key);
 end;
 
 procedure TFormMain.edtLargKeyPress(Sender: TObject; var Key: Char);
 begin
-  soNum(Key);
+ key := soNum(Key);
 end;
 
 procedure TFormMain.edtPosXKeyPress(Sender: TObject; var Key: Char);
 begin
-  soNum(Key);
+ key := soNum(Key);
 end;
 
 procedure TFormMain.edtPosYKeyPress(Sender: TObject; var Key: Char);
 begin
-  soNum(Key);
+ key := soNum(Key);
 end;
 
 procedure TFormMain.edtSpeedKeyPress(Sender: TObject; var Key: Char);
 begin
-  soNum(Key);
+ key := soNum(Key);
 end;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -282,23 +292,25 @@ begin
       if (Components[i] is TTabSheet) then TTabSheet (Components[i]).Enabled := param;
     end;
 
-    PageControl1.Enabled := param;
+    RadioButton1.Enabled := param;
+    RadioButton2.Enabled := param;
+    RadioButton3.Enabled := param;
 
     if param then Button7.Enabled := false
     else Button7.Enabled := true;
 end;
 
+procedure TFormMain.Panel7Click(Sender: TObject);
+begin
+
+end;
+
 //===========================================
-procedure TFormMain.soNum(KeyChar: char);
+function TFormMain.soNum(KeyChar: char): char;
 begin
   if (not (KeyChar in ['0'..'9'])) then KeyChar := #0;
+  Result := KeyChar;
 end;
 
-function TFormMain.valRange(funcao: integer): boolean;
-begin
-Result := false;
-if li then
-
-end;
 
 end.
