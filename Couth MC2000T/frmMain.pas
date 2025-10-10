@@ -3,9 +3,10 @@ unit frmMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, CPDrv, Vcl.StdCtrls,
-  untMC2000T2, Vcl.Tabs, Vcl.ComCtrls, Vcl.ExtCtrls, System.UITypes, Vcl.Grids;
+  System.SysUtils, System.Classes, System.UITypes,
+  Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Grids,
+  Vcl.Controls,
+  untMC2000T2, CPDrv;
 
 type
   TFormMain = class(TForm)
@@ -32,9 +33,6 @@ type
     Panel6: TPanel;
     Panel1: TPanel;
     GroupBox3: TGroupBox;
-    Button6: TButton;
-    Button7: TButton;
-    CommPortDriver1: TCommPortDriver;
     StringGrid1: TStringGrid;
     Panel2: TPanel;
     GroupBox2: TGroupBox;
@@ -43,9 +41,9 @@ type
     Button3: TButton;
     Button4: TButton;
     GroupBox4: TGroupBox;
-    RadioButton1: TRadioButton;
-    RadioButton2: TRadioButton;
-    RadioButton3: TRadioButton;
+    RdBttnTxt: TRadioButton;
+    RdBttnFile: TRadioButton;
+    RdBttnDtmtrx: TRadioButton;
     edtDados: TEdit;
     Label9: TLabel;
     Button5: TButton;
@@ -56,14 +54,14 @@ type
     BttnEnviar: TButton;
     Panel9: TPanel;
     Panel10: TPanel;
+    CheckBox1: TCheckBox;
+    Timer1: TTimer;
     procedure BttnEnviarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
     procedure edtPosXKeyPress(Sender: TObject; var Key: Char);
     procedure edtForcaKeyPress(Sender: TObject; var Key: Char);
     procedure edtAnguloKeyPress(Sender: TObject; var Key: Char);
@@ -75,10 +73,15 @@ type
     procedure BttnAddClick(Sender: TObject);
     procedure BttnLimparClick(Sender: TObject);
     procedure Panel7Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
+    procedure tratarTela();
   private
     { Private declarations }
 
     procedure habilitar(param: boolean);
+    procedure habilitarBTsIsConected(param: boolean);
     function soNum(KeyChar: char): char;
 
   public
@@ -102,11 +105,18 @@ var
 
 
 begin
-  habilitar(False);
+
+//  habilitar(False);
+  habilitar(True);
   MC2000T2 := TMC2000T2.create(Self);
 
-
-
+  //a confguração é opcional, pode ser feita diretamente no 'oCreate' da classe TMC2000T2
+  MC2000T2.setCPortPortName('COM1');
+  MC2000T2.setCPortBaudRate(br9600);
+  MC2000T2.setCPortStopBits(sb1BITS);
+  MC2000T2.setCPortSwFlow(sfNONE);
+  MC2000T2.setCPortDataBits(db8BITS);
+  MC2000T2.setCPortParity(TParity.ptNONE);
 
   for I := 0 to 7 do
     begin
@@ -147,43 +157,55 @@ end;
 
 procedure TFormMain.Button1Click(Sender: TObject);
 begin
+  tratarTela();
   MC2000T2.Avancar();
 end;
 
 procedure TFormMain.Button2Click(Sender: TObject);
 begin
+  tratarTela();
   MC2000T2.Pausar();
 end;
 
 procedure TFormMain.Button3Click(Sender: TObject);
 begin
+  tratarTela();
   MC2000T2.Cancelar();
+end;
+
+procedure TFormMain.Button4Click(Sender: TObject);
+begin
+  tratarTela();
+  if (MC2000T2.solStatus()) then
+  MessageDlg('sucesso!', mtInformation, [mbok], 0)
+  else MessageDlg('Falha!', mtError, [mbok], 0);
 end;
 
 procedure TFormMain.BttnEnviarClick(Sender: TObject);
 begin
+  //MC2000T2.setDestinatario(2); // o valor do parametro é o valor em decimal da tabela ASCii
+
+  tratarTela();
+
   if (MC2000T2.enviar()) then MessageDlg('Dados enviados com sucesso!', mtInformation, [mbok], 0)
   else MessageDlg('Falha ao enviar os dados a marcadora Couth!', mtError, [mbok], 0);
 end;
 
 
-procedure TFormMain.Button6Click(Sender: TObject);
+procedure TFormMain.CheckBox1Click(Sender: TObject);
 begin
-  habilitar(False);
-end;
-
-procedure TFormMain.Button7Click(Sender: TObject);
-begin
-//  if (MC2000T2.conectar())  then
-    begin
-      habilitar(True);
-      BttnEnviar.Enabled := false;
-      BttnLimpar.Enabled := false;
-    end;
+  MC2000T2.setKeepCon(CheckBox1.Checked);
 end;
 
 procedure TFormMain.BttnAddClick(Sender: TObject);
+var
+  op: integer;
 begin
+
+  op := 0;
+  if (RdBttnDtmtrx.Checked) then op := 1
+  else if (RdBttnFile.Checked) then op := 2;
+
   MC2000T2.addLinha    ();
   MC2000T2.setAltChar  (StrToInt(edtAltura.Text)); // Altura do caractere
   MC2000T2.setLargChar (StrToInt(edtLarg.Text));   // Largura do caractere
@@ -193,12 +215,9 @@ begin
   MC2000T2.setAngulo   (StrToInt(edtAngulo.Text)); // Angulo da marcação
   MC2000T2.setSpeed    (StrToInt(edtSpeed.Text));  // Velocidade da marcação
   MC2000T2.setForca    (StrToInt(edtForca.Text));  // Força da marcação
-  MC2000T2.setDados    (edtDados.Text);            // Os dados que serão marcados
+  MC2000T2.setDados    (edtDados.Text, op);        // Os dados que serão marcados, op (0:txt; 1: datamatrix; 2: arquivo)
 
-
-
-  BttnEnviar.Enabled := True;
-  BttnLimpar.Enabled := True;
+  habilitarBTsIsConected(True);
 
   StringGrid1.RowCount := StringGrid1.RowCount + 1;
   StringGrid1.Cells[0, StringGrid1.RowCount -1] := edtPosX.Text;
@@ -225,8 +244,7 @@ begin
   edtForca.Text  := '1';
 //  MC2000T2.setDados    (); // Os dados que serão marcados
 
-  BttnEnviar.Enabled := False;
-  BttnLimpar.Enabled := False;
+  habilitarBTsIsConected(False);
 
   StringGrid1.RowCount := 1;
 end;
@@ -286,18 +304,23 @@ var
 begin
   for i := 0  to ComponentCount -1 do
     begin
-      if (Components[i] is TButton )  then TButton   (Components[i]).Enabled := param;
-      if (Components[i] is TLabel )   then TLabel    (Components[i]).Enabled := param;
-      if (Components[i] is TEdit )    then TEdit     (Components[i]).Enabled := param;
-      if (Components[i] is TTabSheet) then TTabSheet (Components[i]).Enabled := param;
+      if (Components[i] is TButton )     then TButton      (Components[i]).Enabled := param;
+      if (Components[i] is TLabel )      then TLabel       (Components[i]).Enabled := param;
+      if (Components[i] is TEdit )       then TEdit        (Components[i]).Enabled := param;
+      if (Components[i] is TTabSheet)    then TTabSheet    (Components[i]).Enabled := param;
+      if (Components[i] is TCheckBox)    then TCheckBox    (Components[i]).Enabled := param;
+      if (Components[i] is TRadioButton) then TRadioButton (Components[i]).Enabled := param;
     end;
 
-    RadioButton1.Enabled := param;
-    RadioButton2.Enabled := param;
-    RadioButton3.Enabled := param;
 
-    if param then Button7.Enabled := false
-    else Button7.Enabled := true;
+//    if param then BttnConectar.Enabled := false
+//    else BttnConectar.Enabled := true;
+end;
+
+procedure TFormMain.habilitarBTsIsConected(param: boolean);
+begin
+  BttnEnviar.Enabled := param;
+  BttnLimpar.Enabled := param;
 end;
 
 procedure TFormMain.Panel7Click(Sender: TObject);
@@ -308,9 +331,24 @@ end;
 //===========================================
 function TFormMain.soNum(KeyChar: char): char;
 begin
-  if (not (KeyChar in ['0'..'9'])) then KeyChar := #0;
+  if (not (CharInSet(KeyChar, ['0'..'9', #8]))) then KeyChar := #0;
   Result := KeyChar;
 end;
 
+
+procedure TFormMain.Timer1Timer(Sender: TObject);
+begin
+  if (not (MC2000T2.getEnviando)) then
+    begin
+      Timer1.Enabled := False;
+      habilitar(True);
+    end;
+end;
+
+procedure TFormMain.tratarTela;
+begin
+  habilitar(false);
+  Timer1.Enabled := True;
+end;
 
 end.
