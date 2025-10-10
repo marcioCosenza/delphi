@@ -1,6 +1,6 @@
 # Validação, máscaras e tratamento de campos comuns
 
-Funções de validação, máscaras e tratamento para:
+Campos contemplados pela classe TMasks:
 
 * Email;<br> 
 * CEP;<br> 
