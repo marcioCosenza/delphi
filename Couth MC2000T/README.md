@@ -8,13 +8,13 @@ Funções da classe
 * Recupera o status da marcadora
 
 <h3>Controle da marcadora Couth MC2000T2</h3>
-<li>
-<ul>Avançar</ul>
-<ul>Pausar</ul>
-<ul>Reiniciar</ul>
-<ul>Limpar</ul>
-<ul>Resgata o status da marcadora Couth MC2000T2</ul>
-</li>
+<ul>
+<li>Avançar</li>
+<li>Pausar</li>
+<li>Reiniciar</li>
+<li>Limpar</li>
+<li>Resgata o status da marcadora Couth MC2000T2</li>
+</ul>
 
 <h3>Tipo de saida</h3>
 * Texto simples;
