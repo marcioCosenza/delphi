@@ -3,9 +3,11 @@
 Classe em Delphi para ser utilizada com a marcadora Couth
 
 Funções da classe
-* Controla a conexão serial.
-* Controla os dados que serão enviadas a marcadora.
-* Recupera o status da marcadora
+<ul>
+<li>Controla a conexão serial.</li>
+<li>Controla os dados que serão enviadas a marcadora.</li>
+<li>Recupera o status da marcadora</li>
+</ul>
 
 <h3>Controle da marcadora Couth MC2000T2</h3>
 <ul>
@@ -17,10 +19,11 @@ Funções da classe
 </ul>
 
 <h3>Tipo de saida</h3>
-* Texto simples;
-* Datamatrix;
-* Arquivo (pode ser logotipo), o arquivo deve ser previamente enviado a marcadora
-
+<ul>
+<li>Texto simples;</li>
+<li>Datamatrix;</li>
+<li>Arquivo (pode ser logotipo), o arquivo deve ser previamente enviado a marcadora</li>
+</ul>
 
 Como usar:
 
