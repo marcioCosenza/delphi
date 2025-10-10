@@ -1,4 +1,4 @@
-# Controle da marcadora Couth TC2000T2.
+# Controle da marcadora Couth MC2000T2.
 
 Classe em Delphi para ser utilizada com a marcadora Couth
 
@@ -7,12 +7,12 @@ Funções da classe
 * Controla os dados que serão enviadas a marcadora.
 * Recupera o status da marcadora
 
-<h3>Controle da marcadora Couth TC2000T2</h3>
+<h3>Controle da marcadora Couth MC2000T2</h3>
 * Avançar
 * Pausar
 * Reiniciar
 * Limpar
-* Resgata o status da marcadora Couth TC2000T2
+* Resgata o status da marcadora Couth MC2000T2
 
 <h3>Tipo de saida</h3>
 * Texto simples;
