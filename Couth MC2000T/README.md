@@ -29,5 +29,5 @@ Como usar:
 
 
 
-O componente <b>TCommPortDriver</b> deve ser instalado na IDE
-Feito com Delphi 12/VCL
+<p>O componente <b>TCommPortDriver</b> deve ser instalado na IDE</p>
+<p>Feito com Delphi 12/VCL</p>
