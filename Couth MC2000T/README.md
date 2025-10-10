@@ -2,7 +2,7 @@
 
 Classe em Delphi para ser utilizada com a marcadora Couth
 
-Funções da classe
+<h3>Funções da classe</h3>
 <ul>
 <li>Controla a conexão serial.</li>
 <li>Controla os dados que serão enviadas a marcadora.</li>
